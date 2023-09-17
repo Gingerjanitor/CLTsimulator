@@ -1,0 +1,11 @@
+
+funcs/__pycache__/graphit.cpython-310.pyc
+funcs/__pycache__/GenDistribution.cpython-310.pyc
+.spyproject/config/workspace.ini
+.spyproject/config/backups/workspace.ini.bak
+.spyproject/config/backups/vcs.ini.bak
+.spyproject/config/backups/encoding.ini.bak
+.spyproject/config/backups/codestyle.ini.bak
+gui/__pycache__/initparams.cpython-310.pyc
+gui/__pycache__/initparams.cpython-310.pyc
+*.pyc
