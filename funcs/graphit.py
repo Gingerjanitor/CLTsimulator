@@ -9,14 +9,16 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 class mixin():
+    
+        
     def graphit(self):
         
-        #self.pop = self.pop[np.isfinite(self.pop).all(0)]
         
-        sns.histplot(self.pop,density=True)
+        sns.displot(self.pop, kind="kde")
         
         plt.show()
         
         if self.sample.empty==False:
             ##this is where the second graph would be incorporated
             pass
+    

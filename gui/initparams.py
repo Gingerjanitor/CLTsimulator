@@ -25,7 +25,7 @@ class mixin(gendist.gendist):
         #master.geometry("300x200")
         #establish the labels and entry field pairs
         
-        self.header=tk.Message(self.master, width=250, justify="center", text="This tool demonstrates the central limit theorem. First, please describe the population distribution.")
+        self.header=tk.Message(self.master, width=250, justify="center", text="This tool demonstrates the central limit theorem. \n\n First, please describe the population distribution. If it is a non-normal distribution these values will be used as starting points only")
         
         self.descrip1=tk.Label(self.master,text="Mean=")
         self.mean=tk.Entry(self.master)
@@ -42,6 +42,8 @@ class mixin(gendist.gendist):
         self.skrange=tk.Label(self.master, text="Skewness should be between -10 and 10.\n In this context:\n |skew|<2=small skew \n |skew|=2 to 4=moderate skew \n |skew|>4 =high skew", fg="red")
         
         #buttons
+        self.tick=tk.Checkbutton(text="Make it non-normal and messy", variable=self.tickstatus, onvalue=1, offvalue=0)
+        
         self.start=tk.Button(text="Click to start",command=self.mainscript)
         
         #place the labels
@@ -58,8 +60,9 @@ class mixin(gendist.gendist):
         self.descrip3.grid(row=3,column=0, padx=5, pady=5)
         self.skew.grid(row=3,column=1, padx=5, pady=5)
         
+        self.tick.grid(row=4,column=0, columnspan=2, padx=5, pady=5)
                 
-        self.start.grid(row=5,column=0,columnspan=2, padx=5, pady=5)
+        self.start.grid(row=6,column=0,columnspan=2, padx=5, pady=5)
         
         tk.mainloop()
     

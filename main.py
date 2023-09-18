@@ -19,6 +19,8 @@ class CLTsimulation(initparams.mixin,
     def __init__(self,master):
         
         self.sample=pd.DataFrame()
+        self.tickstatus= tk.IntVar()
+
         
         self.master=master
         self.entry(master)
