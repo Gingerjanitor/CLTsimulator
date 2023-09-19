@@ -19,7 +19,7 @@ class CLTsimulation(initparams.mixin,
     def __init__(self,master):
         
         self.sample=pd.DataFrame()
-        self.tickstatus= tk.IntVar()
+        self.tickstatus = tk.IntVar()
 
         
         self.master=master
@@ -30,6 +30,7 @@ class CLTsimulation(initparams.mixin,
     def mainscript(self):
         self.pop_dist()
         self.graphit()
+        self.graphwindow()
         ##initialize the next display
 
 
