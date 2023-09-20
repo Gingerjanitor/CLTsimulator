@@ -18,9 +18,9 @@ class CLTsimulation(initparams.mixin,
                     graphit.mixin): 
     def __init__(self,master):
         
-        self.sample=pd.DataFrame()
+        self.sample=pd.Series()
         self.tickstatus = tk.IntVar()
-
+        self.tickstatus
         
         self.master=master
         self.entry(master)

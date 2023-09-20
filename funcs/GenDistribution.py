@@ -49,11 +49,10 @@ class gendist():
         
                 
         print(finalparams)
-        n=5000
+        n=15000
         
         self.pop=pd.Series(skewnorm.rvs(a=finalparams[0],loc=finalparams[1],scale=finalparams[2], size=n))
         print(self.tickstatus.get())
         
         if int(self.tickstatus.get())==1:
-            print("I want to make it messed up")
             self.ruin_normality(finalparams,n)
