@@ -5,6 +5,7 @@ from scipy.stats import skewnorm
 import random
 import numpy as np
 
+
 class gendist():
     def ruin_normality(self,finalparams, n):
         for num in range(random.randint(1, 5)):

@@ -9,16 +9,17 @@ import pandas as pd
 
 import gui.initparams as initparams
 import funcs.GenDistribution as gendist
-import funcs.graphit as graphit
+import funcs.analysis_opts as analysis_opts
 
 
 
 class CLTsimulation(initparams.mixin,
                     gendist.gendist,
-                    graphit.mixin): 
+                    analysis_opts.mixin): 
     def __init__(self,master):
         
         self.sample=pd.Series()
+        self.samplemeans=pd.Series()
         self.tickstatus = tk.IntVar()
         self.tickstatus
         
