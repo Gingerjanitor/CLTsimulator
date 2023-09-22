@@ -30,8 +30,6 @@ class clt_simulation():
         #master.geometry("300x200")
         #establish the labels and entry field pairs
         
-        
-        
         self.header=tk.Message(self.cltwindow, width=775, justify="center", text=f"If we took an infinite number of samples and the average in each sample, we'd see something very interesting happen. Regardless of if the population distribution is normal or not, these sample means will, eventually, form a normal distribution. And the midpoint of that distribution is the population mean!")
 
 
@@ -43,7 +41,10 @@ class clt_simulation():
         
         # placing the canvas on the Tkinter window
 
-        #buttons
+        #buttons + slider
+        
+        self.slider=tk.Scale(self.cltwindow, from_=5, to=100, tickinterval=10, width=15, length=600, orient=tk.HORIZONTAL)
+        self.slidelabel=tk.Label(self.cltwindow, text="Sample Size")
         
         self.samp5=tk.Button(self.cltwindow, text="Draw 5 samples",command=self.samp5)
         self.samp25=tk.Button(self.cltwindow, text="Sample 5 samples",command=self.samp25)
@@ -56,19 +57,21 @@ class clt_simulation():
         
         self.figure.get_tk_widget().grid(row=1,column=0,columnspan=4,padx=5,pady=5)
         
-        #place the labels
+        #place the labels, buttons, and slider
         self.header.grid(row=0,column=0, columnspan=4,padx=5, pady=5)
-        self.samp5.grid(row=3,column=0, padx=5, pady=5)
-        self.samp25.grid(row=3,column=1, padx=5, pady=5)
-        self.samp100.grid(row=3,column=2, padx=5, pady=5)
-        self.resetsamp.grid(row=3,column=4, padx=25, pady=5)
+        self.slider.grid(row=3, column=1, columnspan=3, padx=5, pady=5)
+        self.slidelabel.grid(row=3,column=0)
+        self.samp5.grid(row=4,column=0, padx=5, pady=5)
+        self.samp25.grid(row=4,column=1, padx=5, pady=5)
+        self.samp100.grid(row=4,column=2, padx=5, pady=5)
+        self.resetsamp.grid(row=4,column=4, padx=25, pady=5)
         
         tk.mainloop()
 
     def clt_graphit(self):
         
         #self.graph=plt.Figure(figsize=(7,5))
-        self.sampgraph, ax=plt.subplots(figsize=(11,6.5))
+        self.sampgraph, ax=plt.subplots(figsize=(6,4))
         
         sns.kdeplot(data=self.pop, ax=ax)
         ax.set_xlim(self.pop.min()*1.10, self.pop.max()*.9)
@@ -94,7 +97,7 @@ class clt_simulation():
             
             self.figure = FigureCanvasTkAgg(self.sampgraph, master = self.cltwindow)  
             #self.figure.draw()
-            self.figure.get_tk_widget().grid(row=1,column=0,columnspan=3,padx=5,pady=5)
+            self.figure.get_tk_widget().grid(row=1,column=0,columnspan=4,padx=5,pady=5)
             
             self.sampdesc=tk.Message(self.cltwindow,width=700, text=f"Mean of the sample means= {round(self.samplemeans.mean(),2)}    Sample means SD= {round(self.samplemeans.std(),2)}    numher of samples drawn={self.samplemeans.count()}")
             self.sampdesc.grid(row=2,column=0, columnspan=3, padx=5,pady=5)
@@ -106,7 +109,7 @@ class clt_simulation():
         newcases=[]
         for k in range(5):
             print(k)
-            newcases.append(self.pop.sample(15).mean())
+            newcases.append(self.pop.sample(int(self.slider.get())).mean())
         temp=pd.Series(newcases)
         self.samplemeans=pd.concat([self.samplemeans,temp])
         print(self.samplemeans)
