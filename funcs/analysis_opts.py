@@ -22,7 +22,7 @@ class mixin(clt_simulation.clt_simulation):
     def graphit(self):
         
         #self.graph=plt.Figure(figsize=(7,5))
-        self.graph, ax=plt.subplots(figsize=(11,6.5))
+        self.graph, ax=plt.subplots(figsize=(9,5.5))
         
         sns.kdeplot(data=self.pop, ax=ax)
         ax.set_xlim(self.pop.min()*1.10, self.pop.max()*.9)
@@ -37,7 +37,11 @@ class mixin(clt_simulation.clt_simulation):
         #A sample has been drawn, graph it!
         if self.sample.empty==False:
             ##this is where the second graph would be incorporated
-            sns.histplot(data=self.sample,stat="density", ax=ax,alpha=.4, palette=["blue"])
+            sns.histplot(data=self.sample,
+                         stat="density", 
+                         ax=ax,alpha=.4, 
+                         palette=["blue"],
+                         bins=25)
             ax.axvline(x = self.sample.mean(),
                        linestyle="dashed",
                        color="orange",
