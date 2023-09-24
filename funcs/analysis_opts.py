@@ -20,7 +20,6 @@ class mixin(clt_simulation.clt_simulation):
     sns.set_style("darkgrid")
     
     def graphit(self):
-        
         #self.graph=plt.Figure(figsize=(7,5))
         self.graph, ax=plt.subplots(figsize=(9,5.5))
         
@@ -36,6 +35,8 @@ class mixin(clt_simulation.clt_simulation):
         
         #A sample has been drawn, graph it!
         if self.sample.empty==False:
+            del self.figure
+
             ##this is where the second graph would be incorporated
             sns.histplot(data=self.sample,
                          stat="density", 
@@ -75,7 +76,6 @@ class mixin(clt_simulation.clt_simulation):
 
 
         ##prepare the graph
-        
         # generate figure
         self.figure = FigureCanvasTkAgg(self.graph, master = self.second)  
         #self.figure.draw()

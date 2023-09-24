@@ -12,11 +12,11 @@ from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, 
 NavigationToolbar2Tk)
 import pandas as pd
-import funcs.clt_simulation as clt_simulation
+import funcs.ci_demonstration as ci
 import matplotlib.gridspec as gridspec
 
 
-class clt_simulation():
+class clt_simulation(ci.ci_simulation):
     def CLTdemo(self):
         self.sample=pd.Series()
         self.second.destroy()
@@ -54,7 +54,7 @@ This next set of options lets you simulate this by drawing many random samples. 
         self.samp25=tk.Button(self.cltwindow, text="Draw 25 samples",command=self.samp25)
         self.samp100=tk.Button(self.cltwindow, text="Draw 100 samples",command=self.samp100)
         self.resetsamp=tk.Button(self.cltwindow, text="Reset",command=self.resetcli)
-        self.democlt=tk.Button(self.cltwindow, text="...But I'm only ever gonna have one sample!",command=self.CLTdemo)
+        self.demoCIs=tk.Button(self.cltwindow, text="...but in practice, you'll only have one sample!",command=self.ci_demo)
 
                    
         #place the graph
@@ -130,7 +130,7 @@ This next set of options lets you simulate this by drawing many random samples. 
             self.sampdesc.grid(row=2,column=0, columnspan=4, padx=5,pady=5)
             
             ##place the continue button
-            #self.democlt.grid(row=4,column=0, columnspan=4, padx=5, pady=4)
+            self.demoCIs.grid(row=5,column=0, columnspan=4, padx=5, pady=4)
     
     def samp5(self):
         newcases=[]

@@ -12,7 +12,6 @@ import funcs.GenDistribution as gendist
 import funcs.analysis_opts as analysis_opts
 
 
-
 class CLTsimulation(initparams.mixin,
                     gendist.gendist,
                     analysis_opts.mixin): 
