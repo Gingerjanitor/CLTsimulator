@@ -11,6 +11,9 @@ import matplotlib.gridspec as gridspec
 
 
 class ci_simulation():
+    
+    
+    
     def ci_demo(self):
         self.cisample=pd.Series()
         self.cltwindow.destroy()
@@ -31,21 +34,21 @@ class ci_simulation():
                  "95% confidence",
                  "99% confidence"]
         
-        selections=tk.StringVar(self.ci_window)
-        selections.set("Click to set a confidence level")
-        self.dropdown=tk.OptionMenu( self.ci_window , selections , *options )
+        self.selections=tk.StringVar(self.ci_window)
+        self.selections.set("Click to set a confidence level")
+        self.dropdown=tk.OptionMenu( self.ci_window , self.selections , *options )
 
         ##prepare the graph
         
         # generate figure
-        #self.figure = FigureCanvasTkAgg(self.sampgraph, master = self.ci_window)  
+        self.figure = FigureCanvasTkAgg(self.sampgraph, master = self.ci_window)  
         #self.figure.draw()
         
         # placing the canvas on the Tkinter window
 
         #buttons + slider
-        self.slider=tk.Scale(self.cltwindow, from_=2, to=50, tickinterval=10, width=15, length=625, orient=tk.HORIZONTAL)
-        self.slidelabel=tk.Label(self.cltwindow, text="Select the size \n of the sample")
+        self.slider=tk.Scale(self.ci_window, from_=5, to=250, tickinterval=50, width=15, length=625, orient=tk.HORIZONTAL)
+        self.slidelabel=tk.Label(self.ci_window, text="Select the size \n of the sample")
 
         self.samp1=tk.Button(self.ci_window, text="Draw 1 sample",command=self.cisamp1)
         self.samp5=tk.Button(self.ci_window, text="Draw 5 samples",command=self.cisamp5)
@@ -56,20 +59,22 @@ class ci_simulation():
                    
         #place the graph
         
-        #self.figure.get_tk_widget().grid(row=1,column=0,columnspan=4,padx=25,pady=5)
+        self.figure.get_tk_widget().grid(row=1,column=0,columnspan=4,padx=25,pady=5)
         
         #place the labels, buttons, and slider
         self.header.grid(row=0,column=0, columnspan=5)
         
-        self.slider.grid(row=3, column=1, columnspan=4, sticky="w")
-        self.slidelabel.grid(row=3,column=0, sticky="e")
+        self.slider.grid(row=4, column=1, columnspan=4, sticky="w")
+        self.slidelabel.grid(row=4,column=0, sticky="e")
         
+        ###eventually there will be a summary with: Most recent 95% CI, # of CIs that have hit the true pop mean
+        # % that have hit the true pop mean
         
-        self.dropdown.grid(row=4, column=0, padx=5, pady=5)
-        self.samp1.grid(row=4,column=1, padx=5, pady=5)
-        self.samp5.grid(row=4,column=2, padx=5, pady=5)
-        self.samp25.grid(row=4,column=3, padx=5, pady=5)
-        self.resetsamp.grid(row=4,column=4, padx=5, pady=5)
+        self.dropdown.grid(row=4, column=0, padx=5, pady=5, sticky="w")
+        self.samp1.grid(row=5,column=0, padx=5, pady=5,sticky="we")
+        self.samp5.grid(row=5,column=1, padx=5, pady=5, sticky="we")
+        self.samp25.grid(row=5,column=2, padx=5, pady=5, sticky="we")
+        self.resetsamp.grid(row=5,column=3, padx=5, pady=5)
         
         tk.mainloop()
         
@@ -77,23 +82,54 @@ class ci_simulation():
     def cidemo_visual(self):
         
         self.sampgraph, ax = plt.subplots(figsize=(12, 5))
-       
-        sns.plot(data=self.pop, ax=ax)
-        #ax1.set_xlim(self.pop.min()*1.10, self.pop.max()*.9)
+        
+        lowerlim=self.pop.mean()-(self.pop.std()*2.5)
+        upperlim=self.pop.mean()+(self.pop.std()*2.5)
+
+        sns.scatterplot(x=self.ci_samps.index, y=self.ci_samps['mean'], ax=ax)
+
+        ax.set_ylim(lowerlim, upperlim)
+
+        ax.set_xlim(0, 25)
+
+        
         #ax.set_xticks(range(self.pop.min(), self.pop.max()))
-        #ax1.axvline(x = self.pop.mean(),
+        ax.axhline(y = self.pop.mean(),
                    linestyle="dashed",
                    color="red",
-                   ymin = 0, # Bottom of the plot
-                   ymax = 1)
+                   xmin = 0, # Bottom of the plot
+                   xmax = 20)
         #ax1.set_title("Population Distribution")
         #ax2.set_title("Distribution of Sample Means")
         
         print("skipped visuals")
         
     def cisamp1(self):
-        pass
-    
+        newcases=pd.Series(self.pop.sample(int(self.slider.get())))
+        
+        n=len(self.ci_samps.index)
+        
+        self.ci_samps.loc[n,'mean']=newcases.mean()
+        
+        print(self.ci_samps)
+        if self.selections.get()=="90% confidence":
+            
+            self.ci_samps.loc[n,'CIupper']=newcases.mean()+(newcases.std()/np.sqrt(newcases.count())*1.645)
+            self.ci_samps.loc[n,'CIlower']=newcases.mean()-(newcases.std()/np.sqrt(newcases.count())*1.645)
+
+        
+        if self.selections.get()=="95% confidence":
+            self.ci_samps.loc[n,'CIupper']=newcases.mean()+(newcases.std()/np.sqrt(newcases.count())*1.96)
+            self.ci_samps.loc[n,'CIlower']=newcases.mean()-(newcases.std()/np.sqrt(newcases.count())*1.96)
+        
+        if self.selections.get()=="99% confidence":
+            self.ci_samps.loc[n,'CIupper']=newcases.mean()+(newcases.std()/np.sqrt(newcases.count())*2.58)
+            self.ci_samps.loc[n,'CIlower']=newcases.mean()-(newcases.std()/np.sqrt(newcases.count())*2.58)
+
+        
+        print(self.ci_samps)
+        
+        
     def cisamp5(self):
         pass
     

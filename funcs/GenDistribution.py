@@ -8,22 +8,25 @@ import numpy as np
 
 class gendist():
     def ruin_normality(self,finalparams, n):
-        for num in range(random.randint(2, 6)):
+        for num in range(random.randint(3, 6)):
+            mean=float(random.uniform(.1,4))
+            if random.randint(1,2)==2:
+                mean=-mean
             noise=pd.Series(skewnorm.rvs(
                                 a=finalparams[0]/float(random.uniform(-4 ,6)),
-                                loc=finalparams[1]/float(random.uniform(.1,4)),
+                                loc=finalparams[1]/mean,
                                 scale=finalparams[2]/float(random.uniform(.1,8)), 
-                                size=int(round((n/random.randint(1,6)),0))
+                                size=int(round((n/random.randint(1,4)),0))
                                 ))
             self.pop=pd.concat([self.pop, noise], axis=0)
         
-        for num in range(random.randint(2,6)):
+        for num in range(random.randint(3,6)):
             value1=self.pop.sample().iloc[0]
             value2=self.pop.sample().iloc[0]
             while value1>=value2:
                 value2=self.pop.sample().iloc[0]
                 
-            noise=pd.Series(np.random.randint(value1,value2, size=int(round((n/random.randint(5,15)),0))))
+            noise=pd.Series(np.random.randint(value1,value2, size=int(round((n/random.randint(3,15)),0))))
             self.pop=pd.concat([self.pop, noise], axis=0)
 
 

@@ -21,7 +21,7 @@ class CLTsimulation(initparams.mixin,
         self.samplemeans=pd.Series()
         self.tickstatus = tk.IntVar()
         self.tickstatus
-        
+        self.ci_samps=pd.DataFrame(columns=['mean','CIlower', 'CIupper'])
         self.master=master
         self.entry(master)
         
