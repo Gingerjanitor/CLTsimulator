@@ -8,6 +8,8 @@ from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg,
 NavigationToolbar2Tk)
 import pandas as pd
 import matplotlib.gridspec as gridspec
+from tkinter import ttk
+
 
 
 class ci_simulation():
@@ -30,13 +32,14 @@ class ci_simulation():
         #establish the labels and entry field pairs
         
         self.header=tk.Message(self.ci_window, width=950, justify="left", text=(f'''Even with just one sample, we can approximate the population distribution with a *confidence interval*. Here's the logic: Remember the distribution of sample means in the last window? If we drew a sample it would be somewhere in that spread. But we don't know if it's in the middle or the edges. But what we can do is create a range that encompasses most of the values of that distribution. We do this by estimating the standard deviation of that sampling distribution (aka the standard error). This is simply sd/sqrt(n), meaning the interval narrows with a larger sample. This is used to create a range where the population mean should fall, with higher confidence meaning a larger interval.\n\n The below simulation lets you draw a sample and see if the population mean is captured within the confidence interval'''))
-        options=["90% confidence",
+        self.options=["Pick confidence",
+                 "90% confidence",
                  "95% confidence",
                  "99% confidence"]
         
         self.selections=tk.StringVar(self.ci_window)
         self.selections.set("Click to set a confidence level")
-        self.dropdown=tk.OptionMenu( self.ci_window , self.selections , *options )
+        self.dropdown=ttk.OptionMenu( self.ci_window , self.selections , *self.options )
 
         ##prepare the graph
         
@@ -103,8 +106,29 @@ class ci_simulation():
         #ax2.set_title("Distribution of Sample Means")
         
         print("skipped visuals")
-        
+    
+    
+    def checkentry(self):
+        if self.selections.get()=="Pick confidence":
+            self.missed=tk.Label(self.ci_window, text="    ***", fg="red")
+            self.missed.grid(row=4, column=0, padx=5, pady=5)
+            error=True
+            return error
+        else:
+            try:
+                self.missed.grid_forget()
+            except:
+                pass
+
+            
+
+    
     def cisamp1(self):
+        print(self.selections.get())
+        error=self.checkentry()
+        if error==True:
+            return
+        
         newcases=pd.Series(self.pop.sample(int(self.slider.get())))
         
         n=len(self.ci_samps.index)
@@ -129,12 +153,11 @@ class ci_simulation():
         
         print(self.ci_samps)
         
-        
+    
     def cisamp5(self):
         pass
     
     def cisamp25(self):
-        pass
-    
+        pass    
     def resetcli(self):
         pass
