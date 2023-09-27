@@ -9,6 +9,7 @@ NavigationToolbar2Tk)
 import pandas as pd
 import matplotlib.gridspec as gridspec
 from tkinter import ttk
+from matplotlib import collections as matcoll
 
 
 
@@ -87,13 +88,17 @@ class ci_simulation():
         self.sampgraph, ax = plt.subplots(figsize=(12, 5))
         
         lowerlim=self.pop.mean()-(self.pop.std()*2.5)
+        
         upperlim=self.pop.mean()+(self.pop.std()*2.5)
 
         sns.scatterplot(x=self.ci_samps.index, y=self.ci_samps['mean'], ax=ax)
 
         ax.set_ylim(lowerlim, upperlim)
 
-        ax.set_xlim(0, 25)
+        if len(self.ci_samps.index)<=25:
+            ax.set_xlim(-1, 25)
+        else:
+            ax.set_xlim(-1, len(self.ci_samps['mean']))
 
         
         #ax.set_xticks(range(self.pop.min(), self.pop.max()))
@@ -104,8 +109,29 @@ class ci_simulation():
                    xmax = 20)
         #ax1.set_title("Population Distribution")
         #ax2.set_title("Distribution of Sample Means")
+        linecoll = matcoll.LineCollection(lines, colors='k')
         
-        print("skipped visuals")
+
+        if self.ci_samps.empty==False:
+            print("me try")
+            ##this is where the second graph would be incorporated
+            sns.scatterplot(data=self.ci_samps,
+                         y=self.ci_samps['mean'],
+                         x=self.ci_samps.index,
+                         ax=ax,
+                         color="black")
+
+            
+            
+            self.figure = FigureCanvasTkAgg(self.sampgraph, master = self.ci_window)  
+            #self.figure.draw()
+            self.figure.get_tk_widget().grid(row=1,column=0,columnspan=4)
+            
+            self.sampdesc=tk.Message(self.ci_window,width=700, text=f"Mean of the sample means= {round(self.samplemeans.mean(),2)}    Sample means SD= {round(self.samplemeans.std(),2)}    Number of samples drawn={self.samplemeans.count()}")
+            self.sampdesc.grid(row=2,column=0, columnspan=4, padx=5,pady=5)
+            
+            ##place the continue button
+            #self.demoCIs.grid(row=5,column=0, columnspan=4, padx=5, pady=4)
     
     
     def checkentry(self):
@@ -152,7 +178,7 @@ class ci_simulation():
 
         
         print(self.ci_samps)
-        
+        self.cidemo_visual()
     
     def cisamp5(self):
         pass
