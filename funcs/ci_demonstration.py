@@ -88,9 +88,25 @@ class ci_simulation():
         
         self.sampgraph, ax = plt.subplots(figsize=(12, 5))
         
-        lowerlim=self.pop.mean()-(self.pop.std()*1.3)
         
-        upperlim=self.pop.mean()+(self.pop.std()*1.3)
+        try:
+            if int(self.slider.get())<=20:
+                
+                lowerlim=self.pop.mean()-(self.pop.std()*1.3)
+                upperlim=self.pop.mean()+(self.pop.std()*1.3)
+            
+            elif 20<int(self.slider.get())<=120:
+                lowerlim=self.pop.mean()-(self.pop.std()*.6)
+                upperlim=self.pop.mean()+(self.pop.std()*.6)
+                
+            elif 120<int(self.slider.get()):
+                lowerlim=self.pop.mean()-(self.pop.std()*.3)
+                upperlim=self.pop.mean()+(self.pop.std()*.3)
+                
+        except tk.TclError: 
+                lowerlim=self.pop.mean()-(self.pop.std()*.6)
+                upperlim=self.pop.mean()+(self.pop.std()*.6)
+                
 
         sns.scatterplot(x=self.ci_samps.index, y=self.ci_samps['mean'], ax=ax)
 
@@ -164,7 +180,6 @@ class ci_simulation():
 
     
     def cisamp1(self):
-        print(self.selections.get())
         error=self.checkentry()
         if error==True:
             return
@@ -176,13 +191,34 @@ class ci_simulation():
         self.cidemo_visual()
     
     def cisamp5(self):
-        pass
+        error=self.checkentry()
+        if error==True:
+            return
+        
+        for num in range(0,5):
+            newcases=pd.Series(self.pop.sample(int(self.slider.get())))
+            
+            self.ci_select(newcases)
+            
+        self.cidemo_visual()
+        
     
     def cisamp25(self):
-        pass    
+        error=self.checkentry()
+        if error==True:
+            return
+        
+        for num in range(0,25):
+            newcases=pd.Series(self.pop.sample(int(self.slider.get())))
+            
+            self.ci_select(newcases)
+            
+        self.cidemo_visual()
     def resetcli(self):
-        pass
-    
+        self.ci_samps=pd.DataFrame()
+        
+        self.cidemo_visual()
+
     def ci_select(self, newcases):
         
         n=len(self.ci_samps.index)
