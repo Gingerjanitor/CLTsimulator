@@ -52,6 +52,7 @@ class ci_simulation():
 
         #buttons + slider
         self.slider=tk.Scale(self.ci_window, from_=5, to=250, tickinterval=50, width=15, length=625, orient=tk.HORIZONTAL)
+        self.slider.set(20)
         self.slidelabel=tk.Label(self.ci_window, text="Select the size \n of the sample")
 
         self.samp1=tk.Button(self.ci_window, text="Draw 1 sample",command=self.cisamp1)
@@ -87,9 +88,9 @@ class ci_simulation():
         
         self.sampgraph, ax = plt.subplots(figsize=(12, 5))
         
-        lowerlim=self.pop.mean()-(self.pop.std()*2.5)
+        lowerlim=self.pop.mean()-(self.pop.std()*1.3)
         
-        upperlim=self.pop.mean()+(self.pop.std()*2.5)
+        upperlim=self.pop.mean()+(self.pop.std()*1.3)
 
         sns.scatterplot(x=self.ci_samps.index, y=self.ci_samps['mean'], ax=ax)
 
@@ -109,7 +110,6 @@ class ci_simulation():
                    xmax = 20)
         #ax1.set_title("Population Distribution")
         #ax2.set_title("Distribution of Sample Means")
-        linecoll = matcoll.LineCollection(lines, colors='k')
         
 
         if self.ci_samps.empty==False:
@@ -120,8 +120,22 @@ class ci_simulation():
                          x=self.ci_samps.index,
                          ax=ax,
                          color="black")
-
             
+            plt.scatter(self.ci_samps.index, self.ci_samps['CIupper'], color='blue', s=0)
+            plt.scatter(self.ci_samps.index, self.ci_samps['CIlower'], color='blue', s=0)
+
+
+            # Connect two points with a line
+            for value in self.ci_samps.index:
+                if self.ci_samps['CIlower'].iloc[value]<=self.pop.mean()<=self.ci_samps['CIupper'].iloc[value]:
+                    print("in range")
+                    print(f" {self.ci_samps['CIlower'].iloc[value]} , mean={self.ci_samps['mean'].iloc[value]}, upper= {self.ci_samps['CIupper'].iloc[value]}")
+                    plt.plot([self.ci_samps.index[value], self.ci_samps.index[value]], [self.ci_samps['CIlower'].iloc[value], self.ci_samps['CIupper'].iloc[value]], color='black')
+
+                else:
+                    print("out of range")
+                    plt.plot([self.ci_samps.index[value], self.ci_samps.index[value]], [self.ci_samps['CIlower'].iloc[value], self.ci_samps['CIupper'].iloc[value]], color='red')
+
             
             self.figure = FigureCanvasTkAgg(self.sampgraph, master = self.ci_window)  
             #self.figure.draw()
@@ -157,11 +171,24 @@ class ci_simulation():
         
         newcases=pd.Series(self.pop.sample(int(self.slider.get())))
         
+        self.ci_select(newcases)
+        
+        self.cidemo_visual()
+    
+    def cisamp5(self):
+        pass
+    
+    def cisamp25(self):
+        pass    
+    def resetcli(self):
+        pass
+    
+    def ci_select(self, newcases):
+        
         n=len(self.ci_samps.index)
         
         self.ci_samps.loc[n,'mean']=newcases.mean()
         
-        print(self.ci_samps)
         if self.selections.get()=="90% confidence":
             
             self.ci_samps.loc[n,'CIupper']=newcases.mean()+(newcases.std()/np.sqrt(newcases.count())*1.645)
@@ -175,15 +202,3 @@ class ci_simulation():
         if self.selections.get()=="99% confidence":
             self.ci_samps.loc[n,'CIupper']=newcases.mean()+(newcases.std()/np.sqrt(newcases.count())*2.58)
             self.ci_samps.loc[n,'CIlower']=newcases.mean()-(newcases.std()/np.sqrt(newcases.count())*2.58)
-
-        
-        print(self.ci_samps)
-        self.cidemo_visual()
-    
-    def cisamp5(self):
-        pass
-    
-    def cisamp25(self):
-        pass    
-    def resetcli(self):
-        pass
