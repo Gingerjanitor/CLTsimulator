@@ -50,6 +50,7 @@ class gendist():
                 return
         if abs(finalparams[0])>8:
                 self.skrange.grid(row=5,column=0,columnspan=2, padx=5, pady=5)
+                return
         
                 
         print(finalparams)

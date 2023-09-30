@@ -25,6 +25,7 @@ class ci_simulation():
         
     def ci_interface(self):
         
+        
         self.ci_window=tk.Tk()
         self.ci_window.eval('tk::PlaceWindow . center')
 
@@ -58,7 +59,7 @@ class ci_simulation():
         self.samp1=tk.Button(self.ci_window, text="Draw 1 sample",command=self.cisamp1)
         self.samp5=tk.Button(self.ci_window, text="Draw 5 samples",command=self.cisamp5)
         self.samp25=tk.Button(self.ci_window, text="Draw 25 samples",command=self.cisamp25)
-        self.resetsamp=tk.Button(self.ci_window, text="Reset",command=self.resetcli)
+        self.resetsamp=tk.Button(self.ci_window, text="Reset",command=self.reset_ci)
         self.demoCIs=tk.Button(self.ci_window, text="...but in practice, you'll only have one sample!",command=self.ci_demo)
 
                    
@@ -107,7 +108,9 @@ class ci_simulation():
                 lowerlim=self.pop.mean()-(self.pop.std()*.6)
                 upperlim=self.pop.mean()+(self.pop.std()*.6)
                 
-
+        
+        print(self.ci_samps)
+        
         sns.scatterplot(x=self.ci_samps.index, y=self.ci_samps['mean'], ax=ax)
 
         ax.set_ylim(lowerlim, upperlim)
@@ -127,9 +130,18 @@ class ci_simulation():
         #ax1.set_title("Population Distribution")
         #ax2.set_title("Distribution of Sample Means")
         
+        
+        if self.resetit==True:
+            self.sampdesc.grid_forget()
+            self.sampdesc=tk.Message(self.ci_window,width=700, text=f"No samples drawn yet, select something!")
+            self.sampdesc.grid(row=2,column=0, columnspan=4, padx=5,pady=5)
+        
+            self.figure = FigureCanvasTkAgg(self.sampgraph, master = self.ci_window)  
+            #self.figure.draw()
+            self.figure.get_tk_widget().grid(row=1,column=0,columnspan=4)
+            self.resetit=False
 
         if self.ci_samps.empty==False:
-            print("me try")
             ##this is where the second graph would be incorporated
             sns.scatterplot(data=self.ci_samps,
                          y=self.ci_samps['mean'],
@@ -144,12 +156,14 @@ class ci_simulation():
             # Connect two points with a line
             for value in self.ci_samps.index:
                 if self.ci_samps['CIlower'].iloc[value]<=self.pop.mean()<=self.ci_samps['CIupper'].iloc[value]:
-                    print("in range")
-                    print(f" {self.ci_samps['CIlower'].iloc[value]} , mean={self.ci_samps['mean'].iloc[value]}, upper= {self.ci_samps['CIupper'].iloc[value]}")
+                    #Add a 1 if they match. 
+                    self.successrate[len(self.successrate)+1]=1
                     plt.plot([self.ci_samps.index[value], self.ci_samps.index[value]], [self.ci_samps['CIlower'].iloc[value], self.ci_samps['CIupper'].iloc[value]], color='black')
 
                 else:
-                    print("out of range")
+                    #Add a 0 if they match.
+                    self.successrate[len(self.successrate)+1]=0
+
                     plt.plot([self.ci_samps.index[value], self.ci_samps.index[value]], [self.ci_samps['CIlower'].iloc[value], self.ci_samps['CIupper'].iloc[value]], color='red')
 
             
@@ -157,7 +171,9 @@ class ci_simulation():
             #self.figure.draw()
             self.figure.get_tk_widget().grid(row=1,column=0,columnspan=4)
             
-            self.sampdesc=tk.Message(self.ci_window,width=700, text=f"Mean of the sample means= {round(self.samplemeans.mean(),2)}    Sample means SD= {round(self.samplemeans.std(),2)}    Number of samples drawn={self.samplemeans.count()}")
+            success=self.successrate.value_counts(normalize=True)
+            
+            self.sampdesc=tk.Message(self.ci_window,width=700, text=f"Thus far, %{round(success[1]*100,2)} of estimates have captured the true population mean")
             self.sampdesc.grid(row=2,column=0, columnspan=4, padx=5,pady=5)
             
             ##place the continue button
@@ -214,11 +230,14 @@ class ci_simulation():
             self.ci_select(newcases)
             
         self.cidemo_visual()
-    def resetcli(self):
-        self.ci_samps=pd.DataFrame()
         
+    def reset_ci(self):
+        self.ci_samps=pd.DataFrame(columns=['mean','CIlower', 'CIupper'])
+        self.successrate=pd.Series()        
+        
+        self.resetit=True
         self.cidemo_visual()
-
+        
     def ci_select(self, newcases):
         
         n=len(self.ci_samps.index)
