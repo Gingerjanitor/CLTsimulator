@@ -30,12 +30,13 @@ class mixin(clt_simulation.clt_simulation):
                    linestyle="dashed",
                    color="red",
                    ymin = 0, # Bottom of the plot
-                   ymax = 1)
+                   ymax = 1,
+                   label="Population mean")
         #self.graph.show()
         
         #A sample has been drawn, graph it!
         if self.sample.empty==False:
-            del self.figure
+            #del self.figure
 
             ##this is where the second graph would be incorporated
             sns.histplot(data=self.sample,
@@ -47,8 +48,8 @@ class mixin(clt_simulation.clt_simulation):
                        linestyle="dashed",
                        color="orange",
                        ymin = 0, # Bottom of the plot
-                       ymax = 1)
-            
+                       ymax = 1,
+                       label='Sample mean')
             
             self.figure = FigureCanvasTkAgg(self.graph, master = self.second)  
             #self.figure.draw()
@@ -61,7 +62,8 @@ class mixin(clt_simulation.clt_simulation):
             #place the continue button
             self.democlt.grid(row=4,column=0, columnspan=4, padx=5, pady=4)
 
-        
+        ax.legend()
+
     def graphwindow(self):
         self.second=tk.Tk()
         self.second.eval('tk::PlaceWindow . center')

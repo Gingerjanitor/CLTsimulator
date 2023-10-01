@@ -18,8 +18,11 @@ class ci_simulation():
     
     
     def ci_demo(self):
+        self.samplemeans=pd.Series()
+        
         self.cisample=pd.Series()
         self.cltwindow.destroy()
+        
         self.cidemo_visual()
         self.ci_interface()
         
@@ -56,9 +59,9 @@ class ci_simulation():
         self.slider.set(20)
         self.slidelabel=tk.Label(self.ci_window, text="Select the size \n of the sample")
 
-        self.samp1=tk.Button(self.ci_window, text="Draw 1 sample",command=self.cisamp1)
-        self.samp5=tk.Button(self.ci_window, text="Draw 5 samples",command=self.cisamp5)
-        self.samp25=tk.Button(self.ci_window, text="Draw 25 samples",command=self.cisamp25)
+        self.cisamp1=tk.Button(self.ci_window, text="Draw 1 sample",command=self.cisamp1)
+        self.cisamp5=tk.Button(self.ci_window, text="Draw 5 samples",command=self.cisamp5)
+        self.cisamp25=tk.Button(self.ci_window, text="Draw 25 samples",command=self.cisamp25)
         self.resetsamp=tk.Button(self.ci_window, text="Reset",command=self.reset_ci)
         self.demoCIs=tk.Button(self.ci_window, text="...but in practice, you'll only have one sample!",command=self.ci_demo)
 
@@ -77,10 +80,14 @@ class ci_simulation():
         # % that have hit the true pop mean
         
         self.dropdown.grid(row=4, column=0, padx=5, pady=5, sticky="w")
-        self.samp1.grid(row=5,column=0, padx=5, pady=5,sticky="we")
-        self.samp5.grid(row=5,column=1, padx=5, pady=5, sticky="we")
-        self.samp25.grid(row=5,column=2, padx=5, pady=5, sticky="we")
+        self.cisamp1.grid(row=5,column=0, padx=5, pady=5,sticky="we")
+        self.cisamp5.grid(row=5,column=1, padx=5, pady=5, sticky="we")
+        self.cisamp25.grid(row=5,column=2, padx=5, pady=5, sticky="we")
         self.resetsamp.grid(row=5,column=3, padx=5, pady=5)
+        
+        self.sampdesc=tk.Message(self.ci_window,width=700, text=f"No samples drawn yet, select something!")
+        self.sampdesc.grid(row=2,column=0, columnspan=4, padx=5,pady=5)
+        
         
         tk.mainloop()
         
@@ -112,7 +119,7 @@ class ci_simulation():
         print(self.ci_samps)
         
         sns.scatterplot(x=self.ci_samps.index, y=self.ci_samps['mean'], ax=ax)
-
+        ax.set_title("Population Mean vs Means and Confidence Intervals of Samples")
         ax.set_ylim(lowerlim, upperlim)
 
         if len(self.ci_samps.index)<=25:
@@ -126,11 +133,12 @@ class ci_simulation():
                    linestyle="dashed",
                    color="red",
                    xmin = 0, # Bottom of the plot
-                   xmax = 20)
+                   xmax = 20,
+                   label="Population Mean")
+        ax.legend()
         #ax1.set_title("Population Distribution")
         #ax2.set_title("Distribution of Sample Means")
-        
-        
+
         if self.resetit==True:
             self.sampdesc.grid_forget()
             self.sampdesc=tk.Message(self.ci_window,width=700, text=f"No samples drawn yet, select something!")
@@ -143,6 +151,7 @@ class ci_simulation():
 
         if self.ci_samps.empty==False:
             ##this is where the second graph would be incorporated
+            
             sns.scatterplot(data=self.ci_samps,
                          y=self.ci_samps['mean'],
                          x=self.ci_samps.index,
@@ -166,13 +175,15 @@ class ci_simulation():
 
                     plt.plot([self.ci_samps.index[value], self.ci_samps.index[value]], [self.ci_samps['CIlower'].iloc[value], self.ci_samps['CIupper'].iloc[value]], color='red')
 
-            
+
             self.figure = FigureCanvasTkAgg(self.sampgraph, master = self.ci_window)  
             #self.figure.draw()
             self.figure.get_tk_widget().grid(row=1,column=0,columnspan=4)
             
             success=self.successrate.value_counts(normalize=True)
             
+            self.sampdesc.grid_forget()
+
             self.sampdesc=tk.Message(self.ci_window,width=700, text=f"Thus far, %{round(success[1]*100,2)} of estimates have captured the true population mean")
             self.sampdesc.grid(row=2,column=0, columnspan=4, padx=5,pady=5)
             

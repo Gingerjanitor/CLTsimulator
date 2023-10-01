@@ -19,6 +19,8 @@ import matplotlib.gridspec as gridspec
 class clt_simulation(ci.ci_simulation):
     def CLTdemo(self):
         self.sample=pd.Series()
+        self.samplemeans=pd.Series()
+        
         self.second.destroy()
         self.clt_graphit()
         self.clt_interface()
@@ -108,7 +110,6 @@ This next set of options lets you simulate this by drawing many random samples. 
         
         #A sample has been drawn, graph it!
         if self.samplemeans.empty==False:
-            print("me try")
             ##this is where the second graph would be incorporated
             sns.histplot(data=self.samplemeans,
                          stat="density", 
@@ -133,6 +134,7 @@ This next set of options lets you simulate this by drawing many random samples. 
             self.demoCIs.grid(row=5,column=0, columnspan=4, padx=5, pady=4)
     
     def samp5(self):
+        print("drawing 5")
         newcases=[]
         for k in range(5):
             print(k)
@@ -145,7 +147,7 @@ This next set of options lets you simulate this by drawing many random samples. 
         
     def samp25(self):
         newcases=[]
-        for k in range(100):
+        for k in range(25):
             print(k)
             newcases.append(self.pop.sample(int(self.slider.get())).mean())
         temp=pd.Series(newcases)

@@ -17,7 +17,6 @@ class CLTsimulation(initparams.mixin,
                     analysis_opts.mixin): 
     def __init__(self,master):
         
-        self.sample=pd.Series()
         self.samplemeans=pd.Series()
         self.tickstatus = tk.IntVar()
         self.resetit=False
@@ -31,6 +30,7 @@ class CLTsimulation(initparams.mixin,
         
         
     def mainscript(self):
+        self.sample=pd.Series()
         self.pop_dist()
         self.graphit()
         self.graphwindow()
