@@ -41,9 +41,7 @@ This next set of options lets you simulate this by drawing many random samples. 
 
         ##prepare the graph
         
-        # generate figure
-        self.figure = FigureCanvasTkAgg(self.sampgraph, master = self.cltwindow)  
-        self.figure.draw()
+
         
         # placing the canvas on the Tkinter window
 
@@ -52,14 +50,18 @@ This next set of options lets you simulate this by drawing many random samples. 
         self.slider=tk.Scale(self.cltwindow, from_=2, to=50, tickinterval=10, width=15, length=625, orient=tk.HORIZONTAL)
         self.slidelabel=tk.Label(self.cltwindow, text="Select the size of \n the samples to be drawn")
         
-        self.samp5=tk.Button(self.cltwindow, text="Draw 5 samples",command=self.samp5)
-        self.samp25=tk.Button(self.cltwindow, text="Draw 25 samples",command=self.samp25)
-        self.samp100=tk.Button(self.cltwindow, text="Draw 100 samples",command=self.samp100)
+        self.samp5=tk.Button(self.cltwindow, text="Draw 5 samples",command=self.sample5)
+        self.samp25=tk.Button(self.cltwindow, text="Draw 25 samples",command=self.sample25)
+        self.samp100=tk.Button(self.cltwindow, text="Draw 100 samples",command=self.sample100)
         self.resetsamp=tk.Button(self.cltwindow, text="Reset",command=self.resetcli)
         self.demoCIs=tk.Button(self.cltwindow, text="...but in practice, you'll only have one sample!",command=self.ci_demo)
 
                    
         #place the graph
+        
+        # generate figure
+        self.figure = FigureCanvasTkAgg(self.sampgraph, master = self.cltwindow)  
+        self.figure.draw()
         
         self.figure.get_tk_widget().grid(row=1,column=0,columnspan=4,padx=25,pady=5)
         
@@ -71,6 +73,9 @@ This next set of options lets you simulate this by drawing many random samples. 
         self.samp25.grid(row=4,column=1, padx=5, pady=5)
         self.samp100.grid(row=4,column=2, padx=5, pady=5)
         self.resetsamp.grid(row=4,column=4, padx=25, pady=5)
+        
+        
+        self.samp5()
         
         tk.mainloop()
 
@@ -133,7 +138,7 @@ This next set of options lets you simulate this by drawing many random samples. 
             ##place the continue button
             self.demoCIs.grid(row=5,column=0, columnspan=4, padx=5, pady=4)
     
-    def samp5(self):
+    def sample5(self):
         print("drawing 5")
         newcases=[]
         for k in range(5):
@@ -145,7 +150,7 @@ This next set of options lets you simulate this by drawing many random samples. 
         self.clt_graphit()
         
         
-    def samp25(self):
+    def sample25(self):
         newcases=[]
         for k in range(25):
             print(k)
@@ -156,7 +161,7 @@ This next set of options lets you simulate this by drawing many random samples. 
         self.clt_graphit()
     
     
-    def samp100(self):
+    def sample100(self):
         newcases=[]
         for k in range(100):
             print(k)

@@ -21,6 +21,11 @@ class ci_simulation():
         self.samplemeans=pd.Series()
         
         self.cisample=pd.Series()
+        self.ci_samps=pd.DataFrame(columns=['mean','CIlower', 'CIupper'])
+
+        
+        
+        self.samp5.destroy()
         self.cltwindow.destroy()
         
         self.cidemo_visual()
@@ -59,9 +64,9 @@ class ci_simulation():
         self.slider.set(20)
         self.slidelabel=tk.Label(self.ci_window, text="Select the size \n of the sample")
 
-        self.cisamp1=tk.Button(self.ci_window, text="Draw 1 sample",command=self.cisamp1)
-        self.cisamp5=tk.Button(self.ci_window, text="Draw 5 samples",command=self.cisamp5)
-        self.cisamp25=tk.Button(self.ci_window, text="Draw 25 samples",command=self.cisamp25)
+        self.cisamp1=tk.Button(self.ci_window, text="Draw 1 sample",command=self.cisample1)
+        self.cisamp5=tk.Button(self.ci_window, text="Draw 5 samples",command=self.cisample5)
+        self.cisamp25=tk.Button(self.ci_window, text="Draw 25 samples",command=self.cisample25)
         self.resetsamp=tk.Button(self.ci_window, text="Reset",command=self.reset_ci)
         self.demoCIs=tk.Button(self.ci_window, text="...but in practice, you'll only have one sample!",command=self.ci_demo)
 
@@ -195,6 +200,7 @@ class ci_simulation():
         if self.selections.get()=="Pick confidence":
             self.missed=tk.Label(self.ci_window, text="    ***", fg="red")
             self.missed.grid(row=4, column=0, padx=5, pady=5)
+            self.shakeit()
             error=True
             return error
         else:
@@ -206,7 +212,7 @@ class ci_simulation():
             
 
     
-    def cisamp1(self):
+    def cisample1(self):
         error=self.checkentry()
         if error==True:
             return
@@ -217,7 +223,7 @@ class ci_simulation():
         
         self.cidemo_visual()
     
-    def cisamp5(self):
+    def cisample5(self):
         error=self.checkentry()
         if error==True:
             return
@@ -230,7 +236,7 @@ class ci_simulation():
         self.cidemo_visual()
         
     
-    def cisamp25(self):
+    def cisample25(self):
         error=self.checkentry()
         if error==True:
             return
@@ -248,6 +254,8 @@ class ci_simulation():
         
         self.resetit=True
         self.cidemo_visual()
+    def shakeit(self):
+        self.
         
     def ci_select(self, newcases):
         
