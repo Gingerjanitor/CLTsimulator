@@ -257,25 +257,12 @@ class ci_simulation():
     
     def noticeme(self):
         self.blockit = tk.Label(self.ci_window, text="                  ")
-        self.flash(8)  # Start the flashing
-
-    def flash(self, counter):
-            print("flash")
-            while counter > 0:
-                print(counter)
-                self.dropdown.grid_forget()
-                self.blockit.grid(row=4, column=0, padx=5, pady=5, sticky="w")
-                self.ci_window.after(50, self.unflash, counter-1)
-
-            else:
-                self.unflash()
-                
-    def unflash(self, counter):
-            print("unflash")
-            print(f"unflash counter={counter}")
-            self.blockit.grid_forget()
-            self.dropdown.grid(row=4, column=0, padx=5, pady=5, sticky="w")
-
+        self.dropdown.grid_forget()
+        self.blockit.grid(row=4, column=0, padx=5, pady=5, sticky="w")
+        self.ci_window.update()
+        time.sleep(.3)
+        self.blockit.grid_forget()
+        self.dropdown.grid(row=4, column=0, padx=5, pady=5, sticky="w")
 
     def ci_select(self, newcases):
         
