@@ -11,7 +11,7 @@ import matplotlib.gridspec as gridspec
 from tkinter import ttk
 from matplotlib import collections as matcoll
 
-
+import time
 
 class ci_simulation():
     
@@ -200,7 +200,7 @@ class ci_simulation():
         if self.selections.get()=="Pick confidence":
             self.missed=tk.Label(self.ci_window, text="    ***", fg="red")
             self.missed.grid(row=4, column=0, padx=5, pady=5)
-            self.shakeit()
+            self.noticeme()
             error=True
             return error
         else:
@@ -254,9 +254,29 @@ class ci_simulation():
         
         self.resetit=True
         self.cidemo_visual()
-    def shakeit(self):
-        self.
-        
+    
+    def noticeme(self):
+        self.blockit = tk.Label(self.ci_window, text="                  ")
+        self.flash(8)  # Start the flashing
+
+    def flash(self, counter):
+            print("flash")
+            while counter > 0:
+                print(counter)
+                self.dropdown.grid_forget()
+                self.blockit.grid(row=4, column=0, padx=5, pady=5, sticky="w")
+                self.ci_window.after(50, self.unflash, counter-1)
+
+            else:
+                self.unflash()
+                
+    def unflash(self, counter):
+            print("unflash")
+            print(f"unflash counter={counter}")
+            self.blockit.grid_forget()
+            self.dropdown.grid(row=4, column=0, padx=5, pady=5, sticky="w")
+
+
     def ci_select(self, newcases):
         
         n=len(self.ci_samps.index)
